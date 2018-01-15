@@ -119,8 +119,10 @@ void setup() {
   Serial.begin(9600); // Start in case of errors
   greenLED.turnOn();
   while (!Serial) ; // wait
-  delay(1000);
+  delay(5000);
   greenLED.turnOff();
+  delay(1000);
+  greenLED.blink();
 }
 
 
