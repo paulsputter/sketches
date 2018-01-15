@@ -1,17 +1,17 @@
 #define LOCAL 1
-#define USE_DISPLAY 0 // I2C version of LED display
+#define USE_I2C_DISPLAY 0 // I2C version of LED display
 #define DEBUG 1
 #define USE_INTERNET 1
-#define USE_LED 1 // Just the 1602 display with a bunch of wires
+#define USE_RAW_LED 1 // Just the 1602 display with a bunch of wires
 
 
 #include <SPI.h>
 
-#if (USE_DISPLAY && USE_LED)
+#if (USE_I2C_DISPLAY && USE_RAW_LED)
 bugger{}; // force compile time error
 #endif
 
-#if USE_DISPLAY
+#if USE_I2C_DISPLAY
 #include <Wire.h> 
   // Uses I2C controller. Mine connects the four leads as follows
   //   GND GND
@@ -20,10 +20,10 @@ bugger{}; // force compile time error
   //   SCL A5    
 #include <LiquidCrystal_I2C.h>
 #else 
-#if USE_LED
+#if USE_RAW_LED
 #include <LiquidCrystal.h>
 #endif
-#endif //#if USE_DISPLAY
+#endif //#if USE_I2C_DISPLAY
 
 #define PUMP_PORT A3
 #define PUMP_THRESHOLD 300 // Pump is ON if sensor exceeds this value
@@ -36,10 +36,10 @@ bugger{}; // force compile time error
 //running on the Ukiah arduino since May 10.
 
 
-#if USE_DISPLAY
+#if USE_I2C_DISPLAY
 LiquidCrystal_I2C lcd(0x27,16,2); // set the LCD address to 0x3F for a 16x2 display
 #else 
-#if USE_LED
+#if USE_RAW_LED
 // The board wiring is as follows:
 //
 // 1 Ground
@@ -143,7 +143,7 @@ int pump_status = 0; // Is the pump on?
 //LED boardLED(13);
 LED greenLED(3);
 
-#if (USE_DISPLAY || USE_LED)
+#if (USE_I2C_DISPLAY || USE_RAW_LED)
 void
 updateLcd(
   int pump_status,
@@ -209,11 +209,11 @@ if (myClient.connect(serverName, 80)) {
 
 void setup() { 
   int i;  
-#if USE_DISPLAY
+#if USE_I2C_DISPLAY
   lcd.init();
   lcd.backlight();
 #else
-#if USE_LED
+#if USE_RAW_LED
   lcd.begin(16,2);
   lcd.print("hello youse");
 #endif
@@ -240,7 +240,7 @@ void setup() {
   DEBUG_PRINTLN("Configured ethernet using DHCP");
 #endif
 
-#if USE_DISPLAY     
+#if USE_I2C_DISPLAY     
      // updateLcd(0,0,0,0);
 #endif
 }
