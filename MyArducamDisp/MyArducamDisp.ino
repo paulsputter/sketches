@@ -4,7 +4,8 @@
 #include <Wire.h> 
 #include <Arducam_I2C.h> // Works with more IIC boards than LiquidCrystal_I2C.h
 
-Arducam_I2C lcd(0x27,16,2); // set the LCD address to 0x3F for a 16 chars and 2 line display,If not work, 
+static int portNum = 0x27;
+Arducam_I2C lcd(portNum, 16, 2); // set the LCD address to 0x3F for a 16 chars and 2 line display,If not work, 
                             // you can set it to 0x27 to try. The I2c address is defined by your I2C controller.
                              
 
@@ -18,10 +19,14 @@ void setup()
   // Print a message to the LCD.
   lcd.backlight();
   lcd.print("Hello, MyArducam!");
-  
-  lcd.print("Hey!");
-  lcd.print(number);
+  char lcd_buffer[16];
   delay(1000);
+  lcd.clear();
+  lcd.home();
+  sprintf(lcd_buffer,"%x",portNum);
+  lcd.print("Port: 0x");
+  lcd.print(lcd_buffer);
+  delay(3000);
   lcd.home();
   lcd.print("Hello again");
   delay(1000);
