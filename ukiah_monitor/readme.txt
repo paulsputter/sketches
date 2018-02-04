@@ -1,3 +1,1 @@
-I copied these from "sketches.old" with the intention of keeping a central github
-repository "sketches.git."
-Keep this synced up on github.
+Keep the files in here synced up on github in sketches.git
