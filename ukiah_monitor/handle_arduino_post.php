@@ -1,4 +1,5 @@
-<?php	$filename = "pump_stats.txt";
+<?php	
+    
     // This script processes a request, e.g.,
 	// handle_arduino_post.php?pump_time=2352&pump_cycles=5
 
@@ -6,7 +7,13 @@
 	$pump_time = $_GET['pump_time'] ;
 	$cum_pump_time = $_GET['cum_pump_time'];
 	$pump_cycles = $_GET['pump_cycles'];
-	
+	$for_testing = $_GET['for_testing'];
+
+	if(intval($for_testing) == 1) {
+	  $filename = "test_pump_stats.txt";
+	} else {
+	  $filename = "pump_stats.txt";
+	}
 	$fh = fopen($filename, 'ab');
 	date_default_timezone_set('America/Los_Angeles');
 	$timenow = date("20y/m/d,H:i:s");

@@ -1,4 +1,3 @@
-//This file can be renamed index.php (as it is on paulputter.com)
 <html>
 <head>
 <meta http-equiv="refresh" content="5"/>

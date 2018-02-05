@@ -1,6 +1,7 @@
 #define LOCAL 1
 #define USE_I2C_DISPLAY 1 // I2C version of LED display
 #define DEBUG 1
+#define FOR_TESTING 0 // Set to 0 when actually monitoring pump
 
 #define USE_RAW_LED 0 // Just the 1602 display with a bunch of wires
 
@@ -187,6 +188,8 @@ if (myClient.connect(serverName, 80)) {
       myClient.print(pump_time);
       myClient.print("&cum_pump_time=");
       myClient.print(cum_pump_time);
+      myClient.print("&for_testing=");
+      myClient.print(FOR_TESTING);
       myClient.println(" HTTP/1.1"); // Peter's suggestion 9/25/2017
   //    myClient.println(" Http/1.0");     
       myClient.print("Host: ");
