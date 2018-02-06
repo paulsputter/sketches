@@ -1,4 +1,4 @@
-#define LOCAL 1
+#define LOCAL 0
 #define USE_I2C_DISPLAY 1 // I2C version of LED display
 #define DEBUG 1
 #define FOR_TESTING 0 // Set to 0 when actually monitoring pump
@@ -127,8 +127,8 @@ LED::blink(void)
   blink(sensorPin);
 }
 
-//byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xB1, 0x80 }; // Board number 1
-byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xCC, 0x04 }; // Board number 2
+byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xB1, 0x80 }; // Board number 1
+//byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xCC, 0x04 }; // Board number 2
 
 #if LOCAL
 char serverName[] = "192.168.0.113"; // IP address of local server (RPi #3)
