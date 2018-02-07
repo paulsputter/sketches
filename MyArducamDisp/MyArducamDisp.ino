@@ -2,6 +2,12 @@
 //Compatible with the Arduino IDE 1.0
 //Library version:1.1
 #include <Wire.h> 
+
+  // Uses I2C controller. Mine connects the four leads as follows
+  //   GND GND
+  //   VCC +5v
+  //   SDA A4
+  //   SCL A5    
 #include <Arducam_I2C.h> // Works with more IIC boards than LiquidCrystal_I2C.h
 
 static int portNum = 0x3F;
