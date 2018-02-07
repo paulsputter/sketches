@@ -1,0 +1,25 @@
+#include <LiquidCrystal.h>
+
+
+
+// initialize the library by associating any needed LCD interface pin
+
+
+// with the arduino pin number it is connected to
+
+// YO PAUL The pin mapping differs from the adafruit mapping, because I had to choose pins to
+
+// work with the ethernet board.
+
+
+// Additional wiring to LCD:
+
+//   RW, VSS, and K to GND (K is backlight ground)
+
+//   VDD and A to +5v (A is backlight power)
+
+//   V0 to wiper off 10K variable potentiometer, other ends to +5v and GND
+
+const int rs = 7, en = 8, d4 = 9, d5 = 4, d6 = 5, d7 = 6;
+
+LiquidCrystal lcd(rs, en, d4, d5, d6, d7);

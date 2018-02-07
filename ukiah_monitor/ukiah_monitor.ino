@@ -1,8 +1,9 @@
-#define LOCAL 1
-#define USE_I2C_DISPLAY 0 // I2C version of LED display
+#define LOCAL 0
+#define USE_I2C_DISPLAY 1 // I2C version of LED display
 #define DEBUG 1
-#define USE_INTERNET 1
-#define USE_RAW_LED 1 // Just the 1602 display with a bunch of wires
+#define FOR_TESTING 0 // Set to 0 when actually monitoring pump
+
+#define USE_RAW_LED 0 // Just the 1602 display with a bunch of wires
 
 
 #include <SPI.h>
@@ -18,7 +19,7 @@ bugger{}; // force compile time error
   //   VCC +5v
   //   SDA A4
   //   SCL A5    
-#include <LiquidCrystal_I2C.h>
+#include <Arducam_I2C.h>
 #else 
 #if USE_RAW_LED
 #include <LiquidCrystal.h>
@@ -37,7 +38,8 @@ bugger{}; // force compile time error
 
 
 #if USE_I2C_DISPLAY
-LiquidCrystal_I2C lcd(0x27,16,2); // set the LCD address to 0x3F for a 16x2 display
+static int lcdPort = 0x27;
+Arducam_I2C lcd(lcdPort,16,2); // set the LCD address that found by scanner sketch
 #else 
 #if USE_RAW_LED
 // The board wiring is as follows:
@@ -125,11 +127,11 @@ LED::blink(void)
   blink(sensorPin);
 }
 
-//byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xB1, 0x80 }; // Board number 1
-byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xCC, 0x04 }; // Board number 2
+byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xB1, 0x80 }; // Board number 1
+//byte mac[] = {  0x90, 0xA2, 0xDA, 0x0D, 0xCC, 0x04 }; // Board number 2
 
 #if LOCAL
-char serverName[] = "192.168.0.113"; // IP address of local server
+char serverName[] = "192.168.0.113"; // IP address of local server (RPi #3)
 //char serverName[] = "192.168.0.111"; // IP address of local server
 #else
 char serverName[] = "paulputter.com";
@@ -171,9 +173,8 @@ makeGetCall(
   int pump_cycles,
   double pump_time, 
   double cum_pump_time
-)
-{
-#if USE_INTERNET
+) {
+
 if (myClient.connect(serverName, 80)) {
       DEBUG_PRINT(serverName);
       DEBUG_PRINTLN(" connected");
@@ -187,6 +188,8 @@ if (myClient.connect(serverName, 80)) {
       myClient.print(pump_time);
       myClient.print("&cum_pump_time=");
       myClient.print(cum_pump_time);
+      myClient.print("&for_testing=");
+      myClient.print(FOR_TESTING);
       myClient.println(" HTTP/1.1"); // Peter's suggestion 9/25/2017
   //    myClient.println(" Http/1.0");     
       myClient.print("Host: ");
@@ -204,45 +207,37 @@ if (myClient.connect(serverName, 80)) {
     }
     DEBUG_PRINTLN();
    myClient.stop();
-#endif // #if USE_INTERNET
 }
 
+static char lcd_buffer[16];  
+
 void setup() { 
-  int i;  
-#if USE_I2C_DISPLAY
+    
   lcd.init();
   lcd.backlight();
-#else
-#if USE_RAW_LED
-  lcd.begin(16,2);
-  lcd.print("hello youse");
-#endif
-#endif 
-
-  
+  sprintf(lcd_buffer, "%x", lcdPort);
+  lcd.print("lcd on 0x");
+  lcd.print(lcd_buffer);
+ 
 #if DEBUG
   Serial.begin(9600); // Start in case of errors
   while (!Serial) ; // wait
 #endif
-  DEBUG_PRINTLN("Waiting for ethernet");
-  
-#if USE_INTERNET
+  lcd.setCursor(0,1);
+  lcd.print("await ethernet");
+  DEBUG_PRINTLN("Wait for ethernet");
   greenLED.turnOn();
   while(Ethernet.begin(mac) == 0) {
     DEBUG_PRINTLN("Failed to configure Ethernet using DHCP");
     delay(1000); // Just keep trying, it can't hurt.
   }
-#endif
-   greenLED.turnOff();
+  greenLED.turnOff();
     // give the Ethernet shield a second to initialize:
   delay(1000);
-#if USE_INTERNET
+  lcd.home(); lcd.clear();
+  lcd.print("Connected!");
   DEBUG_PRINTLN("Configured ethernet using DHCP");
-#endif
-
-#if USE_I2C_DISPLAY     
-     // updateLcd(0,0,0,0);
-#endif
+  delay(5000);
 }
 
 
